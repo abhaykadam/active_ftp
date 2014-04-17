@@ -2,8 +2,7 @@ require 'test/unit'
 require 'active_ftp'
 
 class HolaTest < Test::Unit::TestCase
-  def test_dummy
-    assert_equal "Dummy Test",
-    "Dummy Test"
+  def test_active_ftp_instance
+    assert_not_nil ActiveFtp.new
   end
 end
