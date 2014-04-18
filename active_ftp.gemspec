@@ -10,5 +10,5 @@ Gem::Specification.new do |s|
   s.files         = ['lib/active_ftp.rb']
   s.homepage      = 'https://github.com/abhaykadam/active_ftp'
 
-  s.add_dependency "net-ftp-list", [">= 3.2.7"]
+  s.add_runtime_dependency 'net-ftp-list', '= 3.2.6'
 end
