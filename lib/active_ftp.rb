@@ -1,4 +1,5 @@
 require 'net/ftp'
+require 'net/ftp/list'
 
 class ActiveFtp < Net::FTP
   
@@ -6,20 +7,24 @@ class ActiveFtp < Net::FTP
     dir_oper = Proc.new {|abs_dir| rmdir abs_dir}
     file_oper = Proc.new {|abs_file| delete abs_file}
     depth_first(path, dir_oper, file_oper)
+
+    true
   end
   
 private
   def depth_first(path, dir_oper, file_oper)
-    contents = list(path) #...contents may dir and files both
-    
-    contents = contents.map(&:split).delete_if{|e| e.length < 9} #removes OS X "total 0" row
-    
-    return if(contents.length == 0)
-    
-    dirs = contents.select{|e| e[0].start_with? 'd'}.map {|e| e.drop(8)}.map {|e|e.join " "}
-      .each {|dir| depth_first(path + '/' + dir, dir_oper, file_oper); dir_oper.call(path + '/' + dir);}
-    
-    files = contents.select{|e| e[0].start_with? '-'}.map {|e| e.drop(8)}.map {|e|e.join " "}
-      .each {|file| file_oper.call(path + '/' + file)}
+
+    list(path).each do |e|
+      entry = Net::FTP::List.parse(e)
+
+      entry_path = File.join(path, entry.basename)
+
+      if entry.dir?
+        depth_first(entry_path, dir_oper, file_oper)
+        dir_oper.call entry_path
+      elsif entry.file?
+        file_oper.call entry_path
+      end
+    end
   end
 end
