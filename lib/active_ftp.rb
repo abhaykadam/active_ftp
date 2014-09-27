@@ -2,7 +2,7 @@ require 'net/ftp'
 require 'net/ftp/list'
 
 class ActiveFtp < Net::FTP
-  
+
   def rm_r(path)
     dir_oper = Proc.new {|abs_dir| rmdir abs_dir}
     file_oper = Proc.new {|abs_file| delete abs_file}
@@ -10,7 +10,7 @@ class ActiveFtp < Net::FTP
 
     true
   end
-  
+
 private
   def depth_first(path, dir_oper, file_oper)
 
